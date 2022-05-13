@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user.controller');
+const authController = require('../controllers/authentication.controller')
 
 
 router.get("/", (req, res) => {
@@ -11,16 +12,16 @@ router.get("/", (req, res) => {
   });
 
 //UC-201 Add a user
-router.post("/api/user", userController.validateUser, userController.addUser);
+router.post("/api/user", authController.validateToken, userController.validateUser, userController.addUser);
 
 //UC-202 Get all users
-router.get("/api/user", userController.getAllUsers);
+router.get("/api/user", authController.validateToken, userController.getAllUsers);
 
 //UC-203 Request personal user profile
 router.get("/api/user/profile", userController.getUserProfile);
 
 //UC-204 Get info of specific user 
-router.get("/api/user/:userId", userController.getUserById);
+router.get("/api/user/:userId", authController.validateToken, userController.getUserById);
 
 //UC-205 Update a user
 router.put("/api/user/:id", userController.userExists, userController.validateUserUpdate, userController.updateUser);

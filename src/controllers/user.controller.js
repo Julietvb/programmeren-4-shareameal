@@ -1,6 +1,7 @@
 const assert = require('assert');
 // const database = require('../../database/inmemdb')
 const dbconnection = require('../../database/dbconnection')
+const logger = require('../config/config').logger
 
 let controller = {
 /*     validateEmail:(req, res, next) =>{
@@ -143,8 +144,10 @@ let controller = {
     },
 
     getAllUsers:(req, res) => {
+        logger.debug(`getAll aangeroepen. req.userId = ${req.userId}`)
+        
         let {firstName, isActive} = req.query
-        console.log(`name = ${firstName} isActive ${isActive}`)
+        logger.debug(`name = ${firstName} isActive ${isActive}`)
 
         let queryString = 'SELECT `id`, `firstName` FROM `user`'
         if (firstName || isActive) {
@@ -161,7 +164,7 @@ let controller = {
             }
         }
 
-        console.log(queryString);
+        logger.debug(queryString);
 
         dbconnection.getConnection(function(err, connection) {
             if (err){
@@ -177,7 +180,7 @@ let controller = {
               if (error) throw error;
            
               // Don't use the connection here, it has been returned to the pool.
-              console.log('#results = ', results.length)
+              logger.debug('#results = ', results.length)
               res.status(200).json({
                   statusCode: 200,
                   result: results
@@ -195,7 +198,7 @@ let controller = {
     },
 
     getUserById:(req, res, next) => {
-        console.log("getUserById reached");
+        logger.debug("getUserById reached");
         dbconnection.getConnection(function (error, connection) {
             if (error) throw error;
 
@@ -218,7 +221,7 @@ let controller = {
                         
                         connection.release();
     
-                        console.log('#results = ', results.length);
+                        logger.debug('#results = ', results.length);
                         res.status(200).json({
                             status: 200,
                             result: results[0],
@@ -342,7 +345,7 @@ let controller = {
         } */
 
     deleteUser:(req, res, next) => {
-        console.log("deleteUser reached");
+        logger.debug("deleteUser reached");
         dbconnection.getConnection(function (err, connection) {
             if (err) throw err;
 
@@ -359,7 +362,7 @@ let controller = {
 
                     if (error) throw error;
 
-                    console.log('#results = ', results.length);
+                    logger.debug('#results = ', results.length);
                     res.status(200).json({
                         status: 200,
                         message: "User has been deleted",
