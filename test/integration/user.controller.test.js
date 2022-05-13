@@ -3,6 +3,7 @@ process.env.DATABASE = process.env.DATABASE || 'share-a-meal-testdb'
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const server = require("../../index");
+const { logger } = require("../../src/config/config");
 chai.should();
 chai.use(chaiHttp);
 
@@ -197,7 +198,7 @@ describe("Manage users /api/user", () => {
           res.should.be.an("object");
           let { status, result } = res.body;
 
-            console.log(res.body)
+            logger.debug(res.body)
 
 //en graag die res.body even screenshotten      
 //{ status: 409, message: 'Email is already in use.' }
