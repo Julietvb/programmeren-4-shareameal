@@ -199,10 +199,6 @@ describe("Manage users /api/user", () => {
 
             console.log(res.body)
 
-//en graag die res.body even screenshotten      
-//{ status: 409, message: 'Email is already in use.' }
-
-
           //store id for delete test
           userId = result.id;
 
