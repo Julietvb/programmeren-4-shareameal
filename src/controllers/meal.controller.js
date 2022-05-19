@@ -19,8 +19,8 @@ let controller = {
             assert(typeof isVega === 'boolean', 'isVega must be a boolean')
             assert(typeof isVegan === 'boolean', 'isVegan must be a boolean')
             assert(typeof isToTakeHome === 'boolean', 'isToTakeHome must be a boolean')
-            assert(typeof maxAmountOfParticipants === 'Integer', 'maxAmountOfParticipants must be a integer')
-            assert(typeof price === 'double', 'Price must be a double')
+            assert(typeof maxAmountOfParticipants === 'number', 'maxAmountOfParticipants must be a integer')
+            assert(typeof price === 'number', 'Price must be a double')
 
         } catch (err) {
             const error = {
@@ -82,7 +82,7 @@ let controller = {
                                 if (error) throw error;
                                 if (results.affectedRows > 0) {
 
-                                connection.query("SELECT * FROM meal WHERE id = ?", meal.id, function(error, results, fields) {
+                                connection.query("SELECT * FROM meal WHERE name = ?", meal.name, function(error, results, fields) {
                                     if (error) throw error;
                                     connection.release();
 
