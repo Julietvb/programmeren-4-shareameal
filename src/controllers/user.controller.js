@@ -146,7 +146,7 @@ let controller = {
         let {firstName, isActive} = req.query
         console.log(`name = ${firstName} isActive ${isActive}`)
 
-        let queryString = 'SELECT `id`, `firstName` FROM `user`'
+        let queryString = 'SELECT * FROM `user`'
         if (firstName || isActive) {
             queryString += ' WHERE '
             if (firstName) {
