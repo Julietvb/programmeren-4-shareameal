@@ -262,9 +262,9 @@ let controller = {
                         if (err) throw err;
     
                         //store if email is valid or not, can either be 0 or 1
-                        const unValidEmail = results[0].count;
+                        const inValidEmail = results[0].count;
     
-                        if (!unValidEmail) {
+                        if (!inValidEmail) {
                             //put request body in a variable
     
                             const user = {

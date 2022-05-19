@@ -3,6 +3,34 @@ const assert = require('assert');
 const dbconnection = require('../../database/dbconnection')
 
 let controller = {
+    validateMeal:(req, res, next) => {
+        let meal = req.body;
+        let{name, 
+            description, 
+            isVega, 
+            isVegan, 
+            isToTakeHome, 
+            maxAmountOfParticipants, 
+            price} = meal;
+
+        try {
+            assert(typeof name === 'string', 'Name must be a string')
+            assert(typeof description === 'string', 'description must be a string')
+            assert(typeof isVega === 'boolean', 'isVega must be a boolean')
+            assert(typeof isVegan === 'boolean', 'isVegan must be a boolean')
+            assert(typeof isToTakeHome === 'boolean', 'isToTakeHome must be a boolean')
+            assert(typeof maxAmountOfParticipants === 'Integer', 'maxAmountOfParticipants must be a integer')
+            assert(typeof price === 'double', 'Price must be a double')
+
+        } catch (err) {
+            const error = {
+                status: 400,
+                message: err.message,
+            };
+            next(error)
+        }
+        next();
+    },
 
     mealExists: (req, res, next) => {
         dbconnection.getConnection(function (err, connection) {
@@ -30,14 +58,13 @@ let controller = {
     },
 
     addMeal:(req, res) => {
-   
         dbconnection.getConnection(function (err, connection) {
             if (err) throw err;
 
             let meal = req.body;
 
             connection.query(
-                'SELECT COUNT(name) as count FROM meal WHERE bane = ?', meal.emailAdress,
+                'SELECT COUNT(name) as count FROM meal WHERE name = ?', meal.name,
                 function (error, results, fields) {
                     connection.release();
 
@@ -50,12 +77,12 @@ let controller = {
                         });
                     } else {
                         connection.query(
-                            `INSERT INTO meal (name, description, isActive, isVega, isVegan, isToTakeHome, ) VALUES ('${meal.firstName}', '${meal.lastName}', '${meal.street}', '${meal.city}', '${meal.password}', '${meal.emailAdress}')`,
+                            `INSERT INTO meal (isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, name, description) VALUES ('${meal.isVega}', '${meal.isVegan}', '${meal.isToTakeHome}', '${meal.maxAmountOfParticipants}', '${meal.price}', '${meal.name}', '${meal.description}')`,
                             function (error, results, fields) {       
                                 if (error) throw error;
                                 if (results.affectedRows > 0) {
 
-                                connection.query("SELECT * FROM meal WHERE emailAdress = ?", meal.emailAdress, function(error, results, fields) {
+                                connection.query("SELECT * FROM meal WHERE id = ?", meal.id, function(error, results, fields) {
                                     if (error) throw error;
                                     connection.release();
 
@@ -78,18 +105,18 @@ let controller = {
         });
     },
 
-    getAllmeals:(req, res) => {
-        let {firstName, isActive} = req.query
-        console.log(`name = ${firstName} isActive ${isActive}`)
+    getAllMeals:(req, res) => {
+        let {name, isActive} = req.query
+        console.log(`name = ${name} isActive ${isActive}`)
 
         let queryString = 'SELECT * FROM `meal`'
-        if (firstName || isActive) {
+        if (name || isActive) {
             queryString += ' WHERE '
-            if (firstName) {
-                queryString += '`firstName` LIKE ?'
-                firstName = '%' + firstName + '%'
+            if (name) {
+                queryString += '`name` LIKE ?'
+                name = '%' + name + '%'
             }
-            if (firstName && isActive) {
+            if (name && isActive) {
                 queryString += ' AND '
             }
             if (isActive) {
@@ -105,7 +132,7 @@ let controller = {
             }; // not connected!
            
             // Use the connection
-            connection.query(queryString, [firstName, isActive], function (error, results, fields) {
+            connection.query(queryString, [name, isActive], function (error, results, fields) {
               // When done with the connection, release it.
               connection.release();
            
@@ -123,14 +150,7 @@ let controller = {
         });
     },
 
-    getmealProfile:(req, res) => {
-        res.status(200).json({
-            code: 200,
-            message: "This functionality hasn't been added yet.",
-        });
-    },
-
-    getmealById:(req, res, next) => {
+    getMealById:(req, res, next) => {
         console.log("getmealById reached");
         dbconnection.getConnection(function (error, connection) {
             if (error) throw error;
@@ -146,7 +166,7 @@ let controller = {
                 if(!results[0].count) {
                     return next({
                         status: 404,
-                        message: `meal doesn't exist`,
+                        message: `Meal doesn't exist`,
                     });
                 } else {
                     connection.query( 'SELECT * FROM meal WHERE id = ?', mealId, function (error, results, fields) {
@@ -165,7 +185,7 @@ let controller = {
         });
     },
 
-    updatemeal:(req, res, next) => {
+    updateMeal:(req, res, next) => {
         //create connection
         dbconnection.getConnection((err, connection) => {
             //throw error if something went wrong
@@ -193,14 +213,14 @@ let controller = {
     
                 //if meal exists
                 if (results[0]) {
-                    connection.query("SELECT COUNT(emailAdress) as count FROM meal WHERE emailAdress = ? AND id <> ?", [oldmeal.emailAdress, id], (err, results, fields) => {
+                    connection.query("SELECT COUNT(id) as count FROM meal WHERE id = ? AND id <> ?", [oldmeal.id, id], (err, results, fields) => {
                         //throw error if something went wrong
                         if (err) throw err;
     
                         //store if email is valid or not, can either be 0 or 1
-                        const unValidEmail = results[0].count;
+                        const inValidMealName = results[0].count;
     
-                        if (!unValidEmail) {
+                        if (!inValidMealName) {
                             //put request body in a variable
     
                             const meal = {
@@ -208,10 +228,11 @@ let controller = {
                                 ...newmeal,
                             };
     
-                            const { firstName, lastName, emailAdress, password, street, city } = meal;
+                            const { name, description, id, isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price} = meal;
     
                             //update meal
-                            connection.query("UPDATE meal SET firstName = ?, lastName = ?, emailAdress = ?, password = ?, street = ?, city = ? WHERE id = ?", [firstName, lastName, emailAdress, password, street, city, id], (err, results, fields) => {
+                            connection.query("UPDATE meal SET name = ?, description = ?, id = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", 
+                                                    [name, description, id, isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, id], (err, results, fields) => {
                                 //throw error if something went wrong
                                 if (err) throw err;
     
@@ -231,7 +252,7 @@ let controller = {
                             //return false status if email is already in use by another meal
                             return next({
                                 status: 409,
-                                message: `Email is already in use`,
+                                message: `Meal name already in use`,
                             });
                         }
                     });
@@ -239,45 +260,14 @@ let controller = {
                     //if the meal isn't found return a fitting error response
                     return next({
                         status: 400,
-                        message: `meal doesn't exist`,
+                        message: `Meal doesn't exist`,
                     });
                 }
             });
         });
 },
 
-/*         const mealId = req.params.id;
-        let meal = req.body;
-    
-        newmeal = {
-          mealId,
-          ...meal,
-        }
-    
-        let selectedmeal = database.filter((item) => item.id == mealId);
-    
-        if (selectedmeal != null && validEmail) {
-          index = database.findIndex((obj) => obj.id == mealId);
-          database[index] = newmeal;
-    
-          res.status(201).json({
-              status: 201,
-              result: `meal ${mealId} succesfully updated.`,
-          });
-        } else if (selectedmeal != null && !validEmail) {
-          res.status(400).json({
-          status: 400,
-          message: `Email is already in use.`,
-          });
-        } else {
-            const error = {
-                status: 400,
-                result: `meal with ID ${mealId} not found`,
-            }
-            next(error);
-        } */
-
-    deletemeal:(req, res, next) => {
+    deleteMeal:(req, res, next) => {
         console.log("deletemeal reached");
         dbconnection.getConnection(function (err, connection) {
             if (err) throw err;
@@ -298,7 +288,7 @@ let controller = {
                     console.log('#results = ', results.length);
                     res.status(200).json({
                         status: 200,
-                        message: "meal has been deleted",
+                        message: "Meal has been deleted",
                     });
 
                     res.end();
@@ -306,26 +296,6 @@ let controller = {
 
         });
     },
-
-/*         const mealId = Number(req.params.mealId);
-        let meal = database.filter((item) => item.id === mealId);
-    
-        if (meal.length > 0) {
-            //make new array with all meals except selected
-            database = database.filter((item) => item.id !== mealId);
-    
-            res.status(200).json({
-                status: 200,
-                message: `meal ${mealId} succesfully removed`,
-            });
-        } else {
-            const error = {
-                status: 400,
-                result: `meal with ID ${mealId} not found`,
-            }
-            next(error);
-        }
-    } */
 }
 
 module.exports = controller;
