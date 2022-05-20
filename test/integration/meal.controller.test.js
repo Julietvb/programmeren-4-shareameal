@@ -179,7 +179,7 @@ describe("Manage meals /api/meal", () => {
             status.should.equals(400);
             message.should.be
               .a("string")
-              .that.equals("Email must be a string");
+              .that.equals("Name must be a string");
             done();
           });
       });

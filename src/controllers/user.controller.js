@@ -30,6 +30,7 @@ let controller = {
             assert(typeof street === 'string', 'Street must be a string')
             assert(typeof city === 'string', 'City must be a string')
             assert(typeof emailAdress === 'string', 'Email must be a string')
+            assert(emailAdress.match(/^([\w\.\-_]+)?\w+@[\w-_]+(\.\w+){1,}$/i), 'Invalid email format');
             assert(typeof password === 'string', 'Password must be a string')
             // assert(typeof phoneNumber === 'string', 'Phonenumber must be a string')
 
@@ -113,7 +114,7 @@ let controller = {
                             message: `Email is already in use.`,
                         });
                     } else {
-                        connection.query(
+                        connection.query(                    
                             `INSERT INTO user (firstName, lastName, street, city, password, emailAdress) VALUES ('${user.firstName}', '${user.lastName}', '${user.street}', '${user.city}', '${user.password}', '${user.emailAdress}')`,
                             function (error, results, fields) {       
                                 if (error) throw error;

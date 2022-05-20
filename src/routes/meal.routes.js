@@ -7,7 +7,7 @@ const mealController = require('../controllers/meal.controller');
 router.post("/api/meal", mealController.validateMeal, mealController.addMeal);
 
 //UC-202 Update a meal
-router.put("/api/meal/:id", mealController.mealExists, mealController.updateMeal);
+router.put("/api/meal/:id", mealController.mealExists, mealController.validateMeal, mealController.updateMeal);
 
 //UC-203 Get all meals
 router.get("/api/meal", mealController.getAllMeals);
