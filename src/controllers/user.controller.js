@@ -3,16 +3,6 @@ const assert = require('assert');
 const dbconnection = require('../../database/dbconnection')
 
 let controller = {
-/*     validateEmail:(req, res, next) =>{
-        let user = req.body;
-
-        database.forEach((u) => {
-            if (u.emailAdress == user.emailAdress) {
-                validEmail = false;
-            }
-        });  
-        next();
-    }, */
     validateUser:(req, res, next) => {
         let user = req.body;
         let{firstName, 
@@ -32,7 +22,8 @@ let controller = {
             assert(typeof emailAdress === 'string', 'Email must be a string')
             assert(emailAdress.match(/^([\w\.\-_]+)?\w+@[\w-_]+(\.\w+){1,}$/i), 'Invalid email format');
             assert(typeof password === 'string', 'Password must be a string')
-            // assert(typeof phoneNumber === 'string', 'Phonenumber must be a string')
+            assert(password.match(/^.{6,}$/) || password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/), 'Invalid password format');
+
 
         } catch (err) {
             const error = {
@@ -58,6 +49,9 @@ let controller = {
         try {
 
             assert(typeof emailAdress === 'string', 'Email must be a string')
+            assert(emailAdress.match(/^([\w\.\-_]+)?\w+@[\w-_]+(\.\w+){1,}$/i), 'Invalid email format');
+            assert(typeof phoneNumber === 'string', 'Phonenumber must be a string')
+            assert(phoneNumber.match(/^(((\\+31|0|0031)6){1}\-{1}[1-9]{1}[0-9]{7})$/), 'Invalid phone number format');
 
         } catch (err) {
             const error = {
@@ -144,7 +138,7 @@ let controller = {
     },
 
     getAllUsers:(req, res) => {
-        let {firstName, isActive} = req.query
+        let {firstName, isActive, limit} = req.query
         console.log(`name = ${firstName} isActive ${isActive}`)
 
         let queryString = 'SELECT * FROM `user`'
@@ -157,9 +151,16 @@ let controller = {
             if (firstName && isActive) {
                 queryString += ' AND '
             }
-            if (isActive) {
-                queryString += `isActive = '${isActive}'`
+            if (isActive === "true") {
+                queryString += `isActive = 1`
             }
+            if (isActive === "false") {
+                queryString += `isActive = 0`
+            }
+        }
+
+        if (limit) {
+            queryString += "LIMIT " + limit;
         }
 
         console.log(queryString);
@@ -180,7 +181,7 @@ let controller = {
               // Don't use the connection here, it has been returned to the pool.
               console.log('#results = ', results.length)
               res.status(200).json({
-                  statusCode: 200,
+                  status: 200,
                   result: results
               })
         
@@ -273,10 +274,10 @@ let controller = {
                                 ...newUser,
                             };
     
-                            const { firstName, lastName, emailAdress, password, street, city } = user;
+                            const { firstName, lastName, emailAdress, password, street, city, phoneNumber } = user;
     
                             //update user
-                            connection.query("UPDATE user SET firstName = ?, lastName = ?, emailAdress = ?, password = ?, street = ?, city = ? WHERE id = ?", [firstName, lastName, emailAdress, password, street, city, id], (err, results, fields) => {
+                            connection.query("UPDATE user SET firstName = ?, lastName = ?, emailAdress = ?, password = ?, street = ?, city = ?, phoneNumber = ? WHERE id = ?", [firstName, lastName, emailAdress, password, street, city, phoneNumber, id], (err, results, fields) => {
                                 //throw error if something went wrong
                                 if (err) throw err;
     
@@ -311,37 +312,6 @@ let controller = {
         });
 },
 
-/*         const userId = req.params.id;
-        let user = req.body;
-    
-        newUser = {
-          userId,
-          ...user,
-        }
-    
-        let selectedUser = database.filter((item) => item.id == userId);
-    
-        if (selectedUser != null && validEmail) {
-          index = database.findIndex((obj) => obj.id == userId);
-          database[index] = newUser;
-    
-          res.status(201).json({
-              status: 201,
-              result: `User ${userId} succesfully updated.`,
-          });
-        } else if (selectedUser != null && !validEmail) {
-          res.status(400).json({
-          status: 400,
-          message: `Email is already in use.`,
-          });
-        } else {
-            const error = {
-                status: 400,
-                result: `User with ID ${userId} not found`,
-            }
-            next(error);
-        } */
-
     deleteUser:(req, res, next) => {
         console.log("deleteUser reached");
         dbconnection.getConnection(function (err, connection) {
@@ -371,26 +341,6 @@ let controller = {
 
         });
     },
-
-/*         const userId = Number(req.params.userId);
-        let user = database.filter((item) => item.id === userId);
-    
-        if (user.length > 0) {
-            //make new array with all users except selected
-            database = database.filter((item) => item.id !== userId);
-    
-            res.status(200).json({
-                status: 200,
-                message: `User ${userId} succesfully removed`,
-            });
-        } else {
-            const error = {
-                status: 400,
-                result: `User with ID ${userId} not found`,
-            }
-            next(error);
-        }
-    } */
 }
 
 module.exports = controller;
