@@ -124,7 +124,7 @@ describe("Manage meals /api/meal", () => {
           res.should.be.an("object");
           let { status, result } = res.body;
 
-          console.log(res.body);
+        //   console.log(res.body);
 
           //store id for delete test
           mealId = result.id;
@@ -135,75 +135,74 @@ describe("Manage meals /api/meal", () => {
     });
   });
 
-  //   // UC-204 Get meal details
-  //   describe("UC-204 Get meal details", () => {
-  //     // it("TC-204-1 Invalid token");
-  //     it("TC-204-2 meal ID doesn't exist", (done) => {
-  //       chai.request(server)
-  //         .get("/api/meal/0")
-  //         .end((req, res) => {
-  //           let { status } = res.body;
-  //           status.should.equals(404);
-  //           done();
-  //         });
-  //     });
-  //     it("TC-204-3 meal ID exists", (done) => {
-  //       chai
-  //         .request(server)
-  //         .get("/api/meal/" + mealId)
-  //         .end((req, res) => {
-  //           let { status } = res.body;
-  //           status.should.equals(200);
-  //           done();
-  //         });
-  //     });
-  //   });
+    // UC-204 Get meal details
+    describe("UC-204 Get meal details", () => {
+      // it("TC-204-1 Invalid token");
+      it("TC-204-2 meal ID doesn't exist", (done) => {
+        chai.request(server)
+          .get("/api/meal/0")
+          .end((req, res) => {
+            let { status } = res.body;
+            status.should.equals(404);
+            done();
+          });
+      });
+      it("TC-204-3 meal ID exists", (done) => {
+        chai
+          .request(server)
+          .get("/api/meal/" + mealId)
+          .end((req, res) => {
+            let { status } = res.body;
+            status.should.equals(200);
+            done();
+          });
+      });
+    });
 
-  //   describe("UC-205 Update meal", () => {
-  //     it("TC-205-1 Email missing", (done) => {
-  //       chai.request(server)
-  //         .put("/api/meal/1")
-  //         .send({
-  //           firstName: "Jet",
-  //           lastName: "Jansen",
-  //           isActive: true,
-  //           // missing email should end up failing
-  //           password: "secret",
-  //           phoneNumber: "0612345678",
-  //           roles: "editor,guest",
-  //           street: "Hopstraat",
-  //           city: "Amsterdam",
-  //         })
-  //         .end((req, res) => {
-  //           let { status, message } = res.body;
-  //           status.should.equals(400);
-  //           message.should.be
-  //             .a("string")
-  //             .that.equals("Email must be a string");
-  //           done();
-  //         });
-  //     });
+    describe("UC-205 Update meal", () => {
+      it("TC-205-1 Name missing", (done) => {
+        chai.request(server)
+          .put("/api/meal/1")
+          .send({
+          //Name missing
+            isVega: false,
+            isVegan: false,
+            isToTakeHome: true,
+            maxAmountOfParticipants: 2,
+            price: 6.0,
+            // name: "Boerenkool met worst",
+            description:
+                "Een heerlijke klassieker! Altijd goed voor tevreden gesmikkel!",
+          })
+          .end((req, res) => {
+            let { status, message } = res.body;
+            status.should.equals(400);
+            message.should.be
+              .a("string")
+              .that.equals("Email must be a string");
+            done();
+          });
+      });
 
-  //     it("TC-205-4 meal ID doesn't exist", (done) => {
-  //         chai.request(server)
-  //             .put("/api/meal/0")
-  //             .send({
-  //                 firstName: "Jan",
-  //                 lastName: "Jansen",
-  //                 isActive: true,
-  //                 emailAdress: "janjansen@server.nl",
-  //                 password: "secretpassword",
-  //                 phoneNumber: "0612345678",
-  //                 roles: "editor,guest",
-  //                 street: "PC Hooftstraat",
-  //                 city: "Amsterdam",
-  //             })
-  //             .end((req, res) => {
-  //                 let { status } = res.body;
-  //                 status.should.equals(400);
-  //                 done();
-  //             });
-  //     });
+      it("TC-205-4 meal ID doesn't exist", (done) => {
+          chai.request(server)
+              .put("/api/meal/0")
+              .send({
+                isVega: false,
+                isVegan: false,
+                isToTakeHome: true,
+                maxAmountOfParticipants: 2,
+                price: 6.0,
+                name: "Boerenkool met worst",
+                description:
+                    "Een heerlijke klassieker! Altijd goed voor tevreden gesmikkel!",
+              })
+              .end((req, res) => {
+                  let { status } = res.body;
+                  status.should.equals(400);
+                  done();
+              });
+      });
 
   //     it("TC-205-6 meal updated succesfully", (done) => {
   //         chai.request(server)
@@ -225,7 +224,7 @@ describe("Manage meals /api/meal", () => {
   //                 done();
   //             });
   //     });
-  //   });
+    });
 
   describe("UC-206 Delete Meal", () => {
     it("TC-206-1 meal doesn't exist", (done) => {
@@ -253,4 +252,5 @@ describe("Manage meals /api/meal", () => {
         });
     });
   });
-});
+})
+

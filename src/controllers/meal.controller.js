@@ -192,19 +192,16 @@ let controller = {
             if (err) throw err;
     
             //save parameter (id) in variable
-            const id = Number(req.params.id);
-    
-            const newmeal = req.body;
-    
-            //check if parameter is a number
-            if (isNaN(id)) {
+            const mealId = req.params.id
+
+            if(isNaN(mealId)) {
                 return next();
             }
-    
-            //set meal object with given request body
-            let meal = req.body;
-    
-            connection.query("SELECT * FROM meal WHERE id = ?", id, (err, results, fields) => {
+
+            //set meal object with given request body    
+            const newmeal = req.body;
+        
+            connection.query("SELECT * FROM meal WHERE id = ?", mealId, (err, results, fields) => {
                 //throw error if something went wrong
                 if (err) throw err;
     
@@ -213,7 +210,7 @@ let controller = {
     
                 //if meal exists
                 if (results[0]) {
-                    connection.query("SELECT COUNT(id) as count FROM meal WHERE id = ? AND id <> ?", [oldmeal.id, id], (err, results, fields) => {
+                    connection.query("SELECT COUNT(name) as count FROM meal WHERE name = ? AND id <> ?", [newmeal.name, mealId], (err, results, fields) => {
                         //throw error if something went wrong
                         if (err) throw err;
     
@@ -232,7 +229,7 @@ let controller = {
     
                             //update meal
                             connection.query("UPDATE meal SET name = ?, description = ?, id = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", 
-                                                    [name, description, id, isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, id], (err, results, fields) => {
+                                                    [name, description, mealId, isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, mealId], (err, results, fields) => {
                                 //throw error if something went wrong
                                 if (err) throw err;
     
