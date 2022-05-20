@@ -7,6 +7,7 @@ const port = process.env.PORT
 const bodyParser = require("body-parser");
 const userRouter = require('./src/routes/user.routes');
 const mealRouter = require('./src/routes/meal.routes');
+const authRouter = require('./src/routes/authentication.routes')
 app.use(bodyParser.json());
 
 app.all("*", (req, res, next) => {
@@ -17,6 +18,7 @@ app.all("*", (req, res, next) => {
 
 app.use(userRouter);
 app.use(mealRouter);
+app.use(authRouter);
 
 app.all("*", (req, res) => {
   res.status(401).json({

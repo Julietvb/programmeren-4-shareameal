@@ -1,5 +1,4 @@
 const assert = require('assert');
-// const database = require('../../database/inmemdb')
 const dbconnection = require('../../database/dbconnection')
 
 let controller = {
