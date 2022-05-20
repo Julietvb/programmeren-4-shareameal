@@ -253,6 +253,8 @@ let controller = {
             //save parameter (id) in variable
             const id = Number(req.params.id);
     
+            if (req.userId === id) {
+
             const newUser = req.body;
     
             //check if parameter is a number
@@ -322,6 +324,12 @@ let controller = {
                     });
                 }
             });
+        } else {
+            return next({
+                status: 401,
+                message: `No permission to edit this user, not logged in`,
+            });
+        }
         });
 },
 
@@ -332,26 +340,33 @@ let controller = {
 
             const userId = Number(req.params.userId);
 
-            if (isNaN(userId)) {
-                next()
-            }
+            if(req.userId === userId){
 
-            connection.query(
-                `DELETE FROM user WHERE id = '${userId}'`,
-                function (error, results, fields) {
-                    connection.release();
+                if (isNaN(userId)) {
+                    next()
+                }
 
-                    if (error) throw error;
+                connection.query(
+                    `DELETE FROM user WHERE id = '${userId}'`,
+                    function (error, results, fields) {
+                        connection.release();
 
-                    console.log('#results = ', results.length);
-                    res.status(200).json({
-                        status: 200,
-                        message: "User has been deleted",
+                        if (error) throw error;
+
+                        console.log('#results = ', results.length);
+                        res.status(200).json({
+                            status: 200,
+                            message: "User has been deleted",
+                        });
+
+                        res.end();
                     });
-
-                    res.end();
+            } else {
+                return next({
+                    status: 403,
+                    message: `No permission to delete this user, no owner rights`,
                 });
-
+            }
         });
     },
 }

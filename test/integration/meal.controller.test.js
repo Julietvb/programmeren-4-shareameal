@@ -175,7 +175,7 @@ describe("Manage meals /api/meal", () => {
             })
             .end((req, res) => {
                 let { status } = res.body;
-                status.should.equals(400);
+                status.should.equals(404);
                 done();
             });
     });
