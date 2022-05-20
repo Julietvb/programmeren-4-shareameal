@@ -142,7 +142,7 @@ let controller = {
               // Don't use the connection here, it has been returned to the pool.
               console.log('#results = ', results.length)
               res.status(200).json({
-                  statusCode: 200,
+                  status: 200,
                   result: results
               })
         
