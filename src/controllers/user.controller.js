@@ -188,10 +188,24 @@ let controller = {
         });
     },
 
-    getUserProfile:(req, res) => {
-        res.status(200).json({
-            code: 200,
-            message: "This functionality hasn't been added yet.",
+    getUserProfile:(req, res, next) => {
+        dbconnection.getConnection(function (error, connection) {
+            if (error) throw error;
+
+            const userId = req.userId
+            console.log(userId)
+
+                connection.query( 'SELECT * FROM user WHERE id = ?', [userId], function (error, results, fields) {
+                    if (error) throw error;
+                        
+                    connection.release();
+    
+                    console.log('#results = ', results.length);
+                    res.status(200).json({
+                        status: 200,
+                        result: results[0],
+                    });
+                });
         });
     },
 

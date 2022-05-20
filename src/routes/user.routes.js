@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
   });
 
 //UC-201 Add a user
-router.post("/api/user", userController.validateUser, userController.addUser);
+router.post("/api/user", userController.addUser);
 
 //UC-202 Get all users
 router.get("/api/user", authController.validate, userController.getAllUsers);
