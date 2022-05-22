@@ -1,7 +1,5 @@
 # Share a meal
-![banner] (https://media.istockphoto.com/vectors/people-take-food-from-a-plate-vector-id1201642586?k=20&m=1201642586&s=612x612&w=0&h=3BNr7uJ_qgmwTjYO5ILyrWA6Qp5_CxmDZ0AniPZVbfU=)
 [![Deploy to Heroku](https://github.com/Julietvb/programmeren-4-shareameal/actions/workflows/main.yml/badge.svg)](https://github.com/Julietvb/programmeren-4-shareameal/actions/workflows)
-![GitHub repo size](https://img.shields.io/github/repo-size/Julietvb/programmeren-4-shareameal?label=Total%20Size)
 ![Github Files](https://img.shields.io/badge/Files-21-pink)
 
 
@@ -45,6 +43,8 @@ The packages installed are divided into 2 categories. When you don't want to use
 - [Body-parser](https://www.npmjs.com/package/body-parser)
 
 
+
+
 - [Mocha](https://mochajs.org/)
 - [Chai](https://www.chaijs.com/)
 - [Assert](https://www.npmjs.com/package/assert)
@@ -53,7 +53,7 @@ The packages installed are divided into 2 categories. When you don't want to use
 To install the packages, enter the following in your command center. 
 
 ```bash
-  npm install **enter your package name here**
+  npm install *enter your package name here*
 ```
 
 ### Project installation
@@ -87,18 +87,18 @@ The following functionalities are realized in the API. The functionalities are d
 
 |**Request Type**|**End-Point**|**Description**|**Access**|
 |:-:|---|---|:-:|
-|POST| /api/user | Register as a new user | :check: |
-|GET| /api/user | Get a list of all users | :cross: |
-|GET| /api/user/profile | Request your personal information | :cross: |
-|GET| /api/user/{id} | Get a users information by searching their id | :cross: |
-|PUT| /api/user/{id} | Update a user | :cross: |
-|DELETE| /api/user/{id} | Delete user | :cross: |
+|POST| /api/user | Register as a new user | :unlock: |
+|GET| /api/user | Get a list of all users | :lock: |
+|GET| /api/user/profile | Request your personal information | :lock: |
+|GET| /api/user/{id} | Get a users information by searching their id | :lock: |
+|PUT| /api/user/{id} | Update a user | :lock: |
+|DELETE| /api/user/{id} | Delete user | :lock: |
 
 ### Meal
 |**Request Type**|**End-Point**|**Description**|**Access**|
 |:-:|---|---|:-:|
-|POST| /api/meal | Add a meal | :cross: |
-|GET| /api/meal | Get a list all meals | :check: |
-|GET| /api/meal/{id} | Get a meals information by searching it's id | :check: |
-|PUT| /api/meal/{id} | Update a meal | :cross: |
-|DELETE| /api/meal/{id} | Delete meal | :cross: |
+|POST| /api/meal | Add a meal | :lock: |
+|GET| /api/meal | Get a list all meals | :unlock: |
+|GET| /api/meal/{id} | Get a meals information by searching it's id | :unlock: |
+|PUT| /api/meal/{id} | Update a meal | :lock: |
+|DELETE| /api/meal/{id} | Delete meal | :lock: |
