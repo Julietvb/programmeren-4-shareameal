@@ -1,5 +1,7 @@
-# programmeren-4-sam-server
-
+# Share a meal
+[![Deploy to Heroku](https://github.com/Julietvb/programmeren-4-shareameal/actions/workflows/main.yml/badge.svg)](https://github.com/Julietvb/programmeren-4-shareameal/actions/workflows)
+![GitHub repo size](https://img.shields.io/github/repo-size/Julietvb/programmeren-4-shareameal?label=Total%20Size)
+![Github Files](https://img.shields.io/badge/Files-21-pink)
 
 
 ## Getting started
