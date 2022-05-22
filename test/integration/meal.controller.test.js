@@ -252,7 +252,7 @@ describe("Manage meals /api/meal", () => {
     it("TC-302-3 No owner rights", (done) => {
       chai
         .request(server)
-        .put("/api/meal/2")
+        .put("/api/meal/3")
         .set('authorization', 'Bearer ' + token)
         .send({
           isVega: false,

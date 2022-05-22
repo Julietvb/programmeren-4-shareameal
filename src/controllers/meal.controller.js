@@ -242,71 +242,73 @@ let controller = {
           const oldmeal = results[0];
           console.log(oldmeal)
 
-          if (cookId === oldmeal.cookId) {
-            //if meal exists
-            if (results[0]) {
-              connection.query(
-                "SELECT COUNT(name) as count FROM meal WHERE name = ? AND id <> ?",
-                [newmeal.name, mealId],
-                (err, results, fields) => {
-                  //throw error if something went wrong
-                  if (err) throw err;
+          if (results[0]) {
+            if (cookId === oldmeal.cookId) {
+                //if meal exists
 
-                  //store if email is valid or not, can either be 0 or 1
-                  const inValidMealName = results[0].count;
+                connection.query(
+                    "SELECT COUNT(name) as count FROM meal WHERE name = ? AND id <> ?",
+                    [newmeal.name, mealId],
+                    (err, results, fields) => {
+                    //throw error if something went wrong
+                    if (err) throw err;
 
-                  if (!inValidMealName) {
-                    //put request body in a variable
+                    //store if email is valid or not, can either be 0 or 1
+                    const inValidMealName = results[0].count;
 
-                    const meal = {
-                      ...oldmeal,
-                      ...newmeal,
-                    };
+                    if (!inValidMealName) {
+                        //put request body in a variable
 
-                    const {
-                      name,
-                      description,
-                      id,
-                      isActive,
-                      isVega,
-                      isVegan,
-                      isToTakeHome,
-                      maxAmountOfParticipants,
-                      price,
-                    } = meal;
+                        const meal = {
+                        ...oldmeal,
+                        ...newmeal,
+                        };
 
-                    //update meal
-                    connection.query(
-                      "UPDATE meal SET name = ?, description = ?, id = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?",
-                      [
+                        const {
                         name,
                         description,
-                        mealId,
+                        id,
                         isActive,
                         isVega,
                         isVegan,
                         isToTakeHome,
                         maxAmountOfParticipants,
                         price,
-                        mealId,
-                      ],
-                      (err, results, fields) => {
-                        //throw error if something went wrong
-                        if (err) throw err;
+                        } = meal;
 
-                        //close connection
-                        connection.release();
+                        //update meal
+                        connection.query(
+                        "UPDATE meal SET name = ?, description = ?, id = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?",
+                        [
+                            name,
+                            description,
+                            mealId,
+                            isActive,
+                            isVega,
+                            isVegan,
+                            isToTakeHome,
+                            maxAmountOfParticipants,
+                            price,
+                            mealId,
+                        ],
+                        (err, results, fields) => {
+                            //throw error if something went wrong
+                            if (err) throw err;
 
-                        //return successful status + updated meal
-                        res.status(200).json({
-                          status: 200,
-                          result: meal,
-                        });
+                            //close connection
+                            connection.release();
 
-                        //end response process
-                        // res.end();
-                      }
-                    );
+                            console.log(meal)
+                            //return successful status + updated meal
+                            res.status(200).json({
+                            status: 200,
+                            result: meal,
+                            });
+
+                            //end response process
+                            // res.end();
+                        }
+                        );
                   } else {
                     //return false status if email is already in use by another meal
                     return next({
@@ -316,19 +318,19 @@ let controller = {
                   }
                 }
               );
-            } else {
-              return next({
-                status: 404,
-                message: `Meal doesn't exist`,
-
-              });
-            }
-          } else {
-            //if the meal isn't found return a fitting error response
-            return next({
+            } else {            
+                return next({
                 status: 403,
                 message: `Can't update meal, no owner rights`,
             });
+
+            }
+          } else {
+            //if the meal isn't found return a fitting error response
+              return next({
+                status: 404,
+                message: `Meal doesn't exist`,
+              });
           }
         }
       );
