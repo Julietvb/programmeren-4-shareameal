@@ -318,15 +318,16 @@ let controller = {
               );
             } else {
               return next({
-                status: 403,
-                message: `Can't update meal, no owner rights`,
+                status: 404,
+                message: `Meal doesn't exist`,
+
               });
             }
           } else {
             //if the meal isn't found return a fitting error response
             return next({
-              status: 404,
-              message: `Meal doesn't exist`,
+                status: 403,
+                message: `Can't update meal, no owner rights`,
             });
           }
         }

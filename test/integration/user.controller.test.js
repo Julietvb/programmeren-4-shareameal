@@ -476,7 +476,7 @@ describe("Manage users /api/user", () => {
         });
     });
 
-    it("TC-206-2 No owner rights", (done) => {
+    it("TC-206-3 No owner rights", (done) => {
       chai
       .request(server)
       .delete("/api/user/4")

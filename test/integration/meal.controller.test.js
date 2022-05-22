@@ -50,7 +50,7 @@ describe("Manage meals /api/meal", () => {
       });
   });
   describe("TC-301-1 add a meal", () => {
-    it("Name missing or invalid, return valid error", (done) => {
+    it("TC-301-1 Name missing or invalid, return valid error", (done) => {
       chai
         .request(server)
         .post("/api/meal")
@@ -75,7 +75,7 @@ describe("Manage meals /api/meal", () => {
         });
     });
 
-    it("MaxParticipants missing or invalid, return valid error", (done) => {
+    it("TC-301-1 MaxParticipants missing or invalid, return valid error", (done) => {
       chai
         .request(server)
         .post("/api/meal")
@@ -102,7 +102,7 @@ describe("Manage meals /api/meal", () => {
         });
     });
 
-    it("Price missing or invalid, return valid error", (done) => {
+    it("TC-301-1 Price missing or invalid, return valid error", (done) => {
       chai
         .request(server)
         .post("/api/meal")
@@ -127,30 +127,54 @@ describe("Manage meals /api/meal", () => {
         });
     });
 
-    it("TC-301-4 Meal already exists", (done) => {
+    it("TC-301-2 Not logged in", (done) => {
       chai
         .request(server)
-        .post("/api/meal")
-        .set('authorization', 'Bearer ' + token)
+        .post("/api/meal/")
         .send({
           isVega: false,
           isVegan: false,
           isToTakeHome: true,
           maxAmountOfParticipants: 2,
           price: 6.0,
-          name: "Pasta Bolognese met tomaat, spekjes en kaas",
+          cookId: 1,
+          name: "Boerenkool met worst",
           description:
             "Een heerlijke klassieker! Altijd goed voor tevreden gesmikkel!",
         })
         .end((req, res) => {
-          res.should.be.an("object");
-          let { status } = res.body;
-          status.should.equals(409);
+          let { status, error } = res.body;
+          status.should.equals(401);
+          error.should.be.a("string")
+          .that.equals("Not logged in!")
           done();
         });
     });
 
-    it("TC-301-5 Meal has been registered succesfully", (done) => {
+    // it("TC-301-4 Meal already exists", (done) => {
+    //   chai
+    //     .request(server)
+    //     .post("/api/meal")
+    //     .set('authorization', 'Bearer ' + token)
+    //     .send({
+    //       isVega: false,
+    //       isVegan: false,
+    //       isToTakeHome: true,
+    //       maxAmountOfParticipants: 2,
+    //       price: 6.0,
+    //       name: "Pasta Bolognese met tomaat, spekjes en kaas",
+    //       description:
+    //         "Een heerlijke klassieker! Altijd goed voor tevreden gesmikkel!",
+    //     })
+    //     .end((req, res) => {
+    //       res.should.be.an("object");
+    //       let { status } = res.body;
+    //       status.should.equals(409);
+    //       done();
+    //     });
+    // });
+
+    it("TC-301-3 Meal has been registered succesfully", (done) => {
       chai
         .request(server)
         .post("/api/meal")
@@ -176,8 +200,8 @@ describe("Manage meals /api/meal", () => {
     });
   });
 
-  describe("UC-305 Update meal", () => {
-    it("TC-305-1 Name missing", (done) => {
+  describe("UC-302 Update meal", () => {
+    it("TC-302-1 Name missing", (done) => {
       chai.request(server)
         .put("/api/meal/1")
         .set('authorization', 'Bearer ' + token)
@@ -202,7 +226,54 @@ describe("Manage meals /api/meal", () => {
         });
     });
 
-    it("TC-305-4 meal ID doesn't exist", (done) => {
+    it("TC-302-2 Not logged in", (done) => {
+      chai
+        .request(server)
+        .put("/api/meal/0")
+        .send({
+          isVega: false,
+          isVegan: false,
+          isToTakeHome: true,
+          maxAmountOfParticipants: 2,
+          price: 6.0,
+          name: "Boerenkool met worst",
+          description:
+              "Een heerlijke klassieker! Altijd goed voor tevreden gesmikkel!",
+        })
+        .end((req, res) => {
+          let { status, error } = res.body;
+          status.should.equals(401);
+          error.should.be.a("string")
+          .that.equals("Not logged in!")
+          done();
+        });
+    });
+
+    it("TC-302-3 No owner rights", (done) => {
+      chai
+        .request(server)
+        .put("/api/meal/2")
+        .set('authorization', 'Bearer ' + token)
+        .send({
+          isVega: false,
+          isVegan: false,
+          isToTakeHome: true,
+          maxAmountOfParticipants: 2,
+          price: 6.0,
+          name: "Boerenkool met worst",
+          description:
+              "Een heerlijke klassieker! Altijd goed voor tevreden gesmikkel!",
+        })
+        .end((req, res) => {
+          let { status, message } = res.body;
+          status.should.equals(403);
+          message.should.be.a("string")
+          .that.equals("Can't update meal, no owner rights")
+          done();
+        });
+    });
+
+    it("TC-302-4 meal ID doesn't exist", (done) => {
         chai.request(server)
             .put("/api/meal/0")
             .set('authorization', 'Bearer ' + token)
@@ -223,7 +294,7 @@ describe("Manage meals /api/meal", () => {
             });
     });
 
-    it("TC-205-6 meal updated succesfully", (done) => {
+    it("TC-302-5 meal updated succesfully", (done) => {
         chai.request(server)
             .put("/api/meal/1")
             .set('authorization', 'Bearer ' + token)
@@ -245,24 +316,22 @@ describe("Manage meals /api/meal", () => {
     });
   });
 
-      // UC-304 Get all meals
-      describe("UC-303 Get all meals", () => {
-        // it("TC-204-1 Invalid token");
-        it("TC-304-2 get all meals", (done) => {
-          chai.request(server)
-            .get("/api/meal")
-            .end((req, res) => {
-              let { status } = res.body;
-              status.should.equals(200);
-              done();
-            });
-        });
+    // UC-304 Get all meals
+    describe("UC-303 Get all meals", () => {
+      it("TC-303-1 get all meals", (done) => {
+        chai.request(server)
+          .get("/api/meal")
+          .end((req, res) => {
+            let { status } = res.body;
+            status.should.equals(200);
+            done();
+          });
       });
+    });
 
     // UC-304 Get meal details
     describe("UC-304 Get meal details", () => {
-      // it("TC-204-1 Invalid token");
-      it("TC-304-2 meal ID doesn't exist", (done) => {
+      it("TC-304-1 meal ID doesn't exist", (done) => {
         chai.request(server)
           .get("/api/meal/0")
           .end((req, res) => {
@@ -271,7 +340,7 @@ describe("Manage meals /api/meal", () => {
             done();
           });
       });
-      it("TC-204-3 meal ID exists", (done) => {
+      it("TC-304-2 meal ID exists", (done) => {
         chai
           .request(server)
           .get("/api/meal/1")
@@ -292,6 +361,33 @@ describe("Manage meals /api/meal", () => {
         .end((req, res) => {
           let { status } = res.body;
           status.should.equals(400);
+          done();
+        });
+    });
+
+    it("TC-305-2 Not logged in", (done) => {
+      chai
+      .request(server)
+      .delete("/api/meal/1")
+        .end((req, res) => {
+          let { status, error } = res.body;
+          status.should.equals(401);
+          error.should.be.a("string")
+          .that.equals("Not logged in!")
+          done();
+        });
+    });
+
+    it("TC-305-3 No owner rights", (done) => {
+      chai
+      .request(server)
+      .delete("/api/meal/2")
+      .set('authorization', 'Bearer ' + token)
+        .end((req, res) => {
+          let { status, message } = res.body;
+          status.should.equals(403);
+          message.should.be.a("string")
+          .that.equals("Can't delete meal, no owner rights")
           done();
         });
     });
