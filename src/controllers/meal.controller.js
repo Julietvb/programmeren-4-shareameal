@@ -90,7 +90,7 @@ let controller = {
             });
           } else {
             connection.query(
-              `INSERT INTO meal (isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, cookId, name, description) VALUES ('${meal.isVega}', '${meal.isVegan}', '${meal.isToTakeHome}', '${meal.maxAmountOfParticipants}', '${meal.price}', '${cookId}', '${meal.name}', '${meal.description}')`,
+              `INSERT IGNORE INTO meal (isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, cookId, name, description) VALUES ('${meal.isVega}', '${meal.isVegan}', '${meal.isToTakeHome}', '${meal.maxAmountOfParticipants}', '${meal.price}', '${cookId}', '${meal.name}', '${meal.description}')`,
               function (error, results, fields) {
                 if (error) throw error;
                 if (results.affectedRows > 0) {
@@ -240,6 +240,7 @@ let controller = {
 
           //store old data
           const oldmeal = results[0];
+          console.log(oldmeal)
 
           if (cookId === oldmeal.cookId) {
             //if meal exists

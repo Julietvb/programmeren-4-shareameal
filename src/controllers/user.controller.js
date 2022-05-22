@@ -36,12 +36,8 @@ let controller = {
 
     validateUserUpdate:(req, res, next) => {
         let user = req.body;
-        let{firstName, 
-            lastName, 
-            street, 
-            city, 
-            emailAdress, 
-            password, 
+        let{
+            emailAdress,  
             phoneNumber} = user;
 
     

@@ -88,7 +88,8 @@ let controller = {
         if (!authHeader) {
             logger.warn('Niet ingelogd!')
             res.status(401).json({
-                error: 'Authorization header missing!',
+                status: 401,
+                error: 'Not logged in!',
                 datetime: new Date().toISOString(),
             })
         } else {
@@ -99,6 +100,7 @@ let controller = {
                 if (err) {
                     logger.warn('Not authorized')
                     res.status(401).json({
+                        status: 401,
                         error: 'Not authorized',
                         datetime: new Date().toISOString(),
                     })
