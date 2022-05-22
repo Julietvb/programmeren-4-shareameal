@@ -346,19 +346,50 @@ let controller = {
       }
 
       connection.query(
-        `DELETE FROM meal WHERE id = '${mealId}'`,
+        "SELECT COUNT(id) as count FROM meal WHERE id =?",
+        mealId,
         function (error, results, fields) {
-          connection.release();
-
           if (error) throw error;
+          if (!results[0].count) {
+            return next({
+              status: 404,
+              message: `Meal doesn't exist`,
+            });
+          } else {
+            connection.query(
+              "SELECT * FROM meal WHERE id = ?",
+              mealId,
+              function (error, results, fields) {
+                if (error) throw error;
 
-          console.log("#results = ", results.length);
-          res.status(200).json({
-            status: 200,
-            message: "Meal has been deleted",
-          });
+                const meal = results[0];
 
-          res.end();
+                if (meal.cookId === cookId) {
+                connection.query(
+                    `DELETE FROM meal WHERE id = '${mealId}'`,
+                    function (error, results, fields) {
+                      connection.release();
+            
+                      if (error) throw error;
+            
+                      console.log("#results = ", results.length);
+                      res.status(200).json({
+                        status: 200,
+                        message: "Meal has been deleted",
+                      });
+            
+                      res.end();
+                    }
+                  );                    
+                } else {
+                    return next({
+                        status: 403,
+                        message: `Can't delete meal, no owner rights`,
+                      });
+                }
+              }
+            );
+          }
         }
       );
     });

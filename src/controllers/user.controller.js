@@ -327,7 +327,7 @@ let controller = {
         } else {
             return next({
                 status: 401,
-                message: `No permission to edit this user, not logged in`,
+                message: `No permission to edit this user, no owner rights`,
             });
         }
         });
@@ -347,7 +347,7 @@ let controller = {
                 }
 
                 connection.query(
-                    `DELETE FROM user WHERE id = '${userId}'`,
+                    `DELETE IGNORE FROM user WHERE id = '${userId}'`,
                     function (error, results, fields) {
                         connection.release();
 

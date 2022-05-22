@@ -39,7 +39,7 @@ let controller = {
                               console.log(token)
                               res.status(200).json({
                                   status: 200,
-                                  result: user, token
+                                  result: {...user, token}
                               })
                           }
                         }
@@ -76,7 +76,8 @@ let controller = {
             next()
         } catch (ex) {
             res.status(422).json({
-                error: ex.toString(),
+                status: 422,
+                message: ex.toString(),
                 datetime: new Date().toISOString(),
             })
         }
@@ -85,7 +86,7 @@ let controller = {
     validate:(req, res, next) => {
         const authHeader = req.headers.authorization
         if (!authHeader) {
-            logger.warn('Authorization header missing!')
+            logger.warn('Niet ingelogd!')
             res.status(401).json({
                 error: 'Authorization header missing!',
                 datetime: new Date().toISOString(),

@@ -3,6 +3,8 @@ process.env.DATABASE = process.env.DATABASE || "share-a-meal-testdb";
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const server = require("../../index");
+const jwt = require('jsonwebtoken')
+const { jwtSecretKey } = require("../../src/config/config");
 chai.should();
 chai.use(chaiHttp);
 
@@ -14,6 +16,7 @@ describe("Manage meals /api/meal", () => {
       chai
         .request(server)
         .post("/api/meal")
+        .set('authorization', 'Bearer ' + jwt.sign({id : 1}), jwtSecretKey)
         .send({
           //Name missing
           isVega: false,
@@ -38,6 +41,7 @@ describe("Manage meals /api/meal", () => {
       chai
         .request(server)
         .post("/api/meal")
+        .set('authorization', 'Bearer ' + jwt.sign({id : 1}), jwtSecretKey)
         .send({
           //MaxParticipants missing
           isVega: false,
@@ -64,6 +68,7 @@ describe("Manage meals /api/meal", () => {
       chai
         .request(server)
         .post("/api/meal")
+        .set('authorization', 'Bearer ' + jwt.sign({id : 1}), jwtSecretKey)
         .send({
           //Price missing
           isVega: false,
@@ -88,6 +93,7 @@ describe("Manage meals /api/meal", () => {
       chai
         .request(server)
         .post("/api/meal")
+        .set('authorization', 'Bearer ' + jwt.sign({id : 1}), jwtSecretKey)
         .send({
           isVega: false,
           isVegan: false,
@@ -110,6 +116,7 @@ describe("Manage meals /api/meal", () => {
       chai
         .request(server)
         .post("/api/meal")
+        .set('authorization', 'Bearer ' + jwt.sign({id : 1}), jwtSecretKey)
         .send({
           isVega: false,
           isVegan: false,
@@ -139,6 +146,7 @@ describe("Manage meals /api/meal", () => {
     it("TC-305-1 Name missing", (done) => {
       chai.request(server)
         .put("/api/meal/1")
+        .set('authorization', 'Bearer ' + jwt.sign({id : 1}), jwtSecretKey)
         .send({
         //Name missing
           isVega: false,
@@ -163,6 +171,7 @@ describe("Manage meals /api/meal", () => {
     it("TC-305-4 meal ID doesn't exist", (done) => {
         chai.request(server)
             .put("/api/meal/0")
+            .set('authorization', 'Bearer ' + jwt.sign({id : 1}), jwtSecretKey)
             .send({
               isVega: false,
               isVegan: false,
@@ -180,26 +189,27 @@ describe("Manage meals /api/meal", () => {
             });
     });
 
-//     it("TC-205-6 meal updated succesfully", (done) => {
-//         chai.request(server)
-//             .put("/api/meal/" + mealId)
-//             .send({
-//                 firstName: "Jan",
-//                 lastName: "Joker",
-//                 isActive: true,
-//                 emailAdress: `janjoker@gmail.com`,
-//                 password: "secret",
-//                 phoneNumber: "0612345678",
-//                 roles: "editor,guest",
-//                 street: "Hopstraat",
-//                 city: "Amsterdam",
-//             })
-//             .end((req, res) => {
-//                 let { status } = res.body;
-//                 status.should.equals(200);
-//                 done();
-//             });
-//     });
+    it("TC-205-6 meal updated succesfully", (done) => {
+        chai.request(server)
+            .put("/api/meal/" + mealId)
+            .set('authorization', 'Bearer ' + jwt.sign({id : 1}), jwtSecretKey)
+            .send({
+                firstName: "Jan",
+                lastName: "Joker",
+                isActive: true,
+                emailAdress: `janjoker@gmail.com`,
+                password: "secret",
+                phoneNumber: "0612345678",
+                roles: "editor,guest",
+                street: "Hopstraat",
+                city: "Amsterdam",
+            })
+            .end((req, res) => {
+                let { status } = res.body;
+                status.should.equals(200);
+                done();
+            });
+    });
   });
 
       // UC-304 Get all meals
@@ -245,6 +255,7 @@ describe("Manage meals /api/meal", () => {
       chai
         .request(server)
         .delete("/api/meal/0")
+        .set('authorization', 'Bearer ' + jwt.sign({id : 1}), jwtSecretKey)
         .end((req, res) => {
           let { status } = res.body;
           status.should.equals(400);
@@ -256,6 +267,7 @@ describe("Manage meals /api/meal", () => {
       chai
         .request(server)
         .delete("/api/meal/" + mealId)
+        .set('authorization', 'Bearer ' + jwt.sign({id : 1}), jwtSecretKey)
         .end((req, res) => {
           let { status } = res.body;
 
