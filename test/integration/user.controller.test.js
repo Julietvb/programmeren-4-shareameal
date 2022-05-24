@@ -2,10 +2,12 @@ process.env.DATABASE = process.env.DATABASE || "share-a-meal-testdb";
 
 const chai = require("chai");
 const chaiHttp = require("chai-http");
+const { expect } = require('chai');
 const { it } = require("mocha");
 const jwt = require('jsonwebtoken')
 const { jwtSecretKey } = require("../../src/config/config");
 const server = require("../../index");
+chai.expect();
 chai.should();
 chai.use(chaiHttp);
 const dbconnection = require("../../database/dbconnection");
@@ -178,6 +180,16 @@ describe("Manage users /api/user", () => {
 
           console.log(res.body);
 
+          expect(result.firstName).to.equal('Jan')
+          expect(result.lastName).to.equal('Jansen')
+          expect(result.isActive).to.equal(true)
+          expect(result.emailAdress).to.equal('janjansen@server.nl')
+          expect(result.password).to.equal('secret')
+          expect(result.phoneNumber).to.equal('06-12345678')
+          expect(result.street).to.equal('PC Hooftstraat')
+          expect(result.city).to.equal('Amsterdam')
+          expect(result.roles).to.equal('editor,guest')
+
           status.should.equals(201);
           done();
         });
@@ -281,7 +293,15 @@ describe("Manage users /api/user", () => {
           .get("/api/user/1")
           .set('authorization', 'Bearer ' + token)
           .end((req, res) => {
-            let { status } = res.body;
+            let { status, result } = res.body;
+
+            expect(result.firstName).to.equal('Mariëtte')
+            expect(result.lastName).to.equal('van den Dullemen')
+            expect(result.isActive).to.equal(1)
+            expect(result.emailAdress).to.equal('m.vandullemen@server.nl')
+            expect(result.password).to.equal('secret')
+
+            console.log(result)
             status.should.equals(200);
             done();
           });
@@ -434,16 +454,24 @@ describe("Manage users /api/user", () => {
         .send({
           firstName: "Jan",
           lastName: "Jansen",
-          isActive: true,
           emailAdress: `janjansen@gmail.com`,
           password: "secret",
-          phoneNumber: "06-12345678",
-          roles: "editor,guest",
           street: "Hopstraat",
           city: "Amsterdam",
+          phoneNumber: "06-12345678",
         })
         .end((req, res) => {
-          let { status } = res.body;
+          let { status, result} = res.body;
+
+          expect(result.firstName).to.equal('Jan')
+          expect(result.lastName).to.equal('Jansen')
+          expect(result.isActive).to.equal(1)
+          expect(result.emailAdress).to.equal('janjansen@gmail.com')
+          expect(result.password).to.equal('secret')
+          expect(result.phoneNumber).to.equal('06-12345678')
+          expect(result.street).to.equal('Hopstraat')
+          expect(result.city).to.equal('Amsterdam')
+
           status.should.equals(200);
           done();
         });

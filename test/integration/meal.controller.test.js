@@ -1,10 +1,12 @@
 process.env.DATABASE = process.env.DATABASE || "share-a-meal-testdb";
 
 const chai = require("chai");
+const { expect } = require('chai');
 const chaiHttp = require("chai-http");
 const server = require("../../index");
 const jwt = require('jsonwebtoken')
 const { jwtSecretKey } = require("../../src/config/config");
+chai.expect();
 chai.should();
 chai.use(chaiHttp);
 const dbconnection = require("../../database/dbconnection");
@@ -57,9 +59,9 @@ describe("Manage meals /api/meal", () => {
         .set('authorization', 'Bearer ' + token)
         .send({
           //Name missing
-          isVega: false,
-          isVegan: false,
-          isToTakeHome: true,
+          isVega: 0,
+          isVegan: 0,
+          isToTakeHome: 1,
           maxAmountOfParticipants: 2,
           price: 6.0,
           // name: "Boerenkool met worst",
@@ -82,9 +84,9 @@ describe("Manage meals /api/meal", () => {
         .set('authorization', 'Bearer ' + token)
         .send({
           //MaxParticipants missing
-          isVega: false,
-          isVegan: false,
-          isToTakeHome: true,
+          isVega: 0,
+          isVegan: 0,
+          isToTakeHome: 1,
           //   maxAmountOfParticipants: 2,
           price: 6.0,
           name: "Boerenkool met worst",
@@ -97,7 +99,7 @@ describe("Manage meals /api/meal", () => {
           status.should.equals(400);
           message.should.be
             .a("string")
-            .that.equals("maxAmountOfParticipants must be a integer");
+            .that.equals("maxAmountOfParticipants must be a number");
           done();
         });
     });
@@ -109,9 +111,9 @@ describe("Manage meals /api/meal", () => {
         .set('authorization', 'Bearer ' + token)
         .send({
           //Price missing
-          isVega: false,
-          isVegan: false,
-          isToTakeHome: true,
+          isVega: 0,
+          isVegan: 0,
+          isToTakeHome: 1,
           maxAmountOfParticipants: 2,
           //   price: 6.00,
           name: "Boerenkool met worst",
@@ -132,9 +134,9 @@ describe("Manage meals /api/meal", () => {
         .request(server)
         .post("/api/meal/")
         .send({
-          isVega: false,
-          isVegan: false,
-          isToTakeHome: true,
+          isVega: 0,
+          isVegan: 0,
+          isToTakeHome: 1,
           maxAmountOfParticipants: 2,
           price: 6.0,
           cookId: 1,
@@ -151,28 +153,28 @@ describe("Manage meals /api/meal", () => {
         });
     });
 
-    // it("TC-301-4 Meal already exists", (done) => {
-    //   chai
-    //     .request(server)
-    //     .post("/api/meal")
-    //     .set('authorization', 'Bearer ' + token)
-    //     .send({
-    //       isVega: false,
-    //       isVegan: false,
-    //       isToTakeHome: true,
-    //       maxAmountOfParticipants: 2,
-    //       price: 6.0,
-    //       name: "Pasta Bolognese met tomaat, spekjes en kaas",
-    //       description:
-    //         "Een heerlijke klassieker! Altijd goed voor tevreden gesmikkel!",
-    //     })
-    //     .end((req, res) => {
-    //       res.should.be.an("object");
-    //       let { status } = res.body;
-    //       status.should.equals(409);
-    //       done();
-    //     });
-    // });
+    it("TC-301-4 Meal already exists", (done) => {
+      chai
+        .request(server)
+        .post("/api/meal")
+        .set('authorization', 'Bearer ' + token)
+        .send({
+          isVega: 0,
+          isVegan: 0,
+          isToTakeHome: 1,
+          maxAmountOfParticipants: 2,
+          price: 6.0,
+          name: "Pasta Bolognese met tomaat, spekjes en kaas",
+          description:
+            "Een heerlijke klassieker! Altijd goed voor tevreden gesmikkel!",
+        })
+        .end((req, res) => {
+          res.should.be.an("object");
+          let { status } = res.body;
+          status.should.equals(409);
+          done();
+        });
+    });
 
     it("TC-301-3 Meal has been registered succesfully", (done) => {
       chai
@@ -180,9 +182,9 @@ describe("Manage meals /api/meal", () => {
         .post("/api/meal")
         .set('authorization', 'Bearer ' + token)
         .send({
-          isVega: false,
-          isVegan: false,
-          isToTakeHome: true,
+          isVega: 0,
+          isVegan: 0,
+          isToTakeHome: 1,
           maxAmountOfParticipants: 2,
           price: 6.0,
           cookId: 1,
@@ -194,6 +196,15 @@ describe("Manage meals /api/meal", () => {
           res.should.be.an("object");
           let { status, result } = res.body;
 
+          expect(result.name).to.equal('Boerenkool met worst')
+          expect(result.isVega).to.equal(0)
+          expect(result.isVegan).to.equal(0)
+          expect(result.isToTakeHome).to.equal(1)
+          expect(result.dateTime).to.equal(null)
+          expect(result.imageUrl).to.equal('')
+          expect(result.maxAmountOfParticipants).to.equal(2)
+          expect(result.price).to.equal('6.00')
+          expect(result.description).to.equal('Een heerlijke klassieker! Altijd goed voor tevreden gesmikkel!')
           status.should.equals(201);
           done();
         });
@@ -207,9 +218,9 @@ describe("Manage meals /api/meal", () => {
         .set('authorization', 'Bearer ' + token)
         .send({
         //Name missing
-          isVega: false,
-          isVegan: false,
-          isToTakeHome: true,
+        isVega: 0,
+        isVegan: 0,
+        isToTakeHome: 1,
           maxAmountOfParticipants: 2,
           price: 6.0,
           // name: "Boerenkool met worst",
@@ -231,9 +242,9 @@ describe("Manage meals /api/meal", () => {
         .request(server)
         .put("/api/meal/0")
         .send({
-          isVega: false,
-          isVegan: false,
-          isToTakeHome: true,
+          isVega: 0,
+          isVegan: 0,
+          isToTakeHome: 1,
           maxAmountOfParticipants: 2,
           price: 6.0,
           name: "Boerenkool met worst",
@@ -255,9 +266,9 @@ describe("Manage meals /api/meal", () => {
         .put("/api/meal/3")
         .set('authorization', 'Bearer ' + token)
         .send({
-          isVega: false,
-          isVegan: false,
-          isToTakeHome: true,
+          isVega: 0,
+          isVegan: 0,
+          isToTakeHome: 1,
           maxAmountOfParticipants: 2,
           price: 6.0,
           name: "Boerenkool met worst",
@@ -278,9 +289,9 @@ describe("Manage meals /api/meal", () => {
             .put("/api/meal/0")
             .set('authorization', 'Bearer ' + token)
             .send({
-              isVega: false,
-              isVegan: false,
-              isToTakeHome: true,
+              isVega: 0,
+              isVegan: 0,
+              isToTakeHome: 1,
               maxAmountOfParticipants: 2,
               price: 6.0,
               name: "Boerenkool met worst",
@@ -299,9 +310,9 @@ describe("Manage meals /api/meal", () => {
             .put("/api/meal/1")
             .set('authorization', 'Bearer ' + token)
             .send({
-              isVega: false,
-              isVegan: false,
-              isToTakeHome: true,
+              isVega: 0,
+              isVegan: 0,
+              isToTakeHome: 1,
               maxAmountOfParticipants: 2,
               price: 6.0,
               name: "Boerenkool met worst",

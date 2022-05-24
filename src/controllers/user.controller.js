@@ -22,7 +22,8 @@ let controller = {
             assert(emailAdress.match(/^([\w\.\-_]+)?\w+@[\w-_]+(\.\w+){1,}$/i), 'Invalid email format');
             assert(typeof password === 'string', 'Password must be a string')
             assert(password.match(/^.{6,}$/) || password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/), 'Invalid password format');
-
+            assert(typeof phoneNumber === 'string', 'Phonenumber must be a string')
+            assert(phoneNumber.match(/^(((\\+31|0|0031)6){1}\-{1}[1-9]{1}[0-9]{7})$/), 'Invalid phone number format');
 
         } catch (err) {
             const error = {
@@ -104,7 +105,7 @@ let controller = {
                         });
                     } else {
                         connection.query(                    
-                            `INSERT INTO user (firstName, lastName, street, city, password, emailAdress) VALUES ('${user.firstName}', '${user.lastName}', '${user.street}', '${user.city}', '${user.password}', '${user.emailAdress}')`,
+                            `INSERT INTO user (firstName, lastName, phoneNumber, street, city, password, emailAdress) VALUES ('${user.firstName}', '${user.lastName}', '${user.phoneNumber}', '${user.street}', '${user.city}', '${user.password}', '${user.emailAdress}')`,
                             function (error, results, fields) {       
                                 if (error) throw error;
                                 if (results.affectedRows > 0) {
@@ -285,6 +286,7 @@ let controller = {
                                 ...newUser,
                             };
     
+                            console.log(user)
                             const { firstName, lastName, emailAdress, password, street, city, phoneNumber } = user;
     
                             //update user

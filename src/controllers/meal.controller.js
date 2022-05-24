@@ -17,15 +17,15 @@ let controller = {
     try {
       assert(typeof name === "string", "Name must be a string");
       assert(typeof description === "string", "description must be a string");
-      assert(typeof isVega === "boolean", "isVega must be a boolean");
-      assert(typeof isVegan === "boolean", "isVegan must be a boolean");
+      assert(typeof isVega === "number", "isVega must be a number");
+      assert(typeof isVegan === "number", "isVegan must be a number");
       assert(
-        typeof isToTakeHome === "boolean",
-        "isToTakeHome must be a boolean"
+        typeof isToTakeHome === "number",
+        "isToTakeHome must be a number"
       );
       assert(
         typeof maxAmountOfParticipants === "number",
-        "maxAmountOfParticipants must be a integer"
+        "maxAmountOfParticipants must be a number"
       );
       assert(typeof price === "number", "Price must be a double");
     } catch (err) {
@@ -98,13 +98,13 @@ let controller = {
                     "SELECT * FROM meal WHERE name = ?",
                     meal.name,
                     function (error, results, fields) {
-                      if (error) throw error;
                       connection.release();
+                      if (error) throw error;
 
                       if (results[0].isActive === 1) {
-                        results[0].isActive = true;
+                        results[0].isActive === true;
                       } else {
-                        results[0].isActive = false;
+                        results[0].isActive === false;
                       }
 
                       res.status(201).json({
