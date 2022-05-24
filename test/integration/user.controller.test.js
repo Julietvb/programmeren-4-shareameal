@@ -301,7 +301,6 @@ describe("Manage users /api/user", () => {
             expect(result.emailAdress).to.equal('m.vandullemen@server.nl')
             expect(result.password).to.equal('secret')
 
-            console.log(result)
             status.should.equals(200);
             done();
           });
