@@ -65,21 +65,23 @@ let controller = {
     validateLogin(req, res, next) {
         // Verify that we receive the expected input
         try {
-            assert(
-                typeof req.body.emailAdress === 'string',
-                'email must be a string.'
-            )
-            assert(
-                typeof req.body.password === 'string',
-                'password must be a string.'
-            )
+            let user = req.body;
+            let {
+                emailAdress,
+                password
+            } = user;
+            
+            assert(typeof emailAdress === 'string', 'Email must be a string')
+            assert(emailAdress.match(/^([\w\.\-_]+)?\w+@[\w-_]+(\.\w+){1,}$/i), 'Invalid email format');
+            assert(typeof password === 'string', 'Password must be a string')
+            assert(password.match(/^.{6,}$/) || password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/), 'Invalid password format');
             next()
-        } catch (ex) {
-            res.status(422).json({
-                status: 422,
-                message: ex.toString(),
-                datetime: new Date().toISOString(),
-            })
+        } catch (err) {
+            const error = {
+                status: 400,
+                message: err.message,
+            };
+            next(error)
         }
     },
 
