@@ -341,8 +341,15 @@ describe("Manage users /api/user", () => {
         .get("/api/user/1")
         .set('authorization', 'Bearer ' + token)
         .end((req, res) => {
-          let { status } = res.body;
-          status.should.equals(200);
+          let { status, result } = res.body;
+
+            expect(result.firstName).to.equal('Mariëtte')
+            expect(result.lastName).to.equal('van den Dullemen')
+            expect(result.isActive).to.equal(1)
+            expect(result.emailAdress).to.equal('m.vandullemen@server.nl')
+            expect(result.password).to.equal('secret')
+            status.should.equals(200);
+            
           done();
         });
     });
