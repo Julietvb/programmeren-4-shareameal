@@ -370,7 +370,6 @@ describe("Manage meals /api/meal", () => {
               expect(result.name).to.equal('Pasta Bolognese met tomaat, spekjes en kaas')
               expect(result.description).to.equal('Een heerlijke klassieker! Altijd goed voor tevreden gesmikkel!')
               expect(result.isActive).to.equal(1)
-              expect(result.dateTime).to.equal('2022-03-22T16:35:00.000Z')
               expect(result.imageUrl).to.equal('https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg')
               expect(result.maxAmountOfParticipants).to.equal(4)
               expect(result.price).to.equal('12.75')
